@@ -16,8 +16,8 @@ use Illuminate\Http\Request;
 Route::prefix('products')->group(function () {
 
     Route::get('/', 'ProdutoController@index');
-    Route::get('/{id}','ProdutoController@show');
-    
+    Route::get('/{product}','ProdutoController@show');
+
 
 
 });

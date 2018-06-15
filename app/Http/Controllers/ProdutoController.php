@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Produto;
+use App\Http\Resources\ProdutoResource;
 
 class ProdutoController extends Controller
 {
@@ -14,11 +15,9 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        $produtos = Produto::paginate();
+        $produtos = ProdutoResource::collection(Produto::paginate(25));
 
-        return response()->json([
-            'result' => $produtos
-        ]);
+        return $produtos;
     }
 
     /**
@@ -38,19 +37,17 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Produto $product)
     {
-        $produto = Produto::find($id);
-
-        if(! $produto) {
+        try {
+            $produto = new ProdutoResource($product);
+        } catch (Exception $e) {
             return response()->json([
-                'result' => 'Resource not found!'
-            ], 404);
+                'error' => 'Product not found'
+            ],404);
         }
 
-        return response()->json([
-                'result' => $produto
-            ], 200);
+        return $produto;
     }
 
     /**
