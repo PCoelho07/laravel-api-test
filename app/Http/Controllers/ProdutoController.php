@@ -32,12 +32,12 @@ class ProdutoController extends Controller
         try {
             $produto = Produto::create($data);
         }catch (\Exception $e) {
-            return reponse()->json([
+            return response()->json([
                 'error' => $e->getMessage()
                 ], 500);
         }
 
-        return reponse()->json([
+        return response()->json([
             'message' => 'success'
         ], 200);
     }
@@ -61,16 +61,30 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Produto $prod, Request $request)
+    public function update($prod, Request $request)
     {
-        $data = $request->all();
+        $data = [
+            'nome' => $request->input('nome'), 
+            'descricao' => $request->input('descricao'), 
+            'valor_compra' => $request->input('valor_compra'), 
+            'valor_revenda' => $request->input('valor_revenda'), 
+            'ativo' => $request->input('ativo'), 
+            'imagem_url' => $request->input('imagem_url')
+        ];
 
         $produto = Produto::find($prod);
 
-        dd($produto);
-                
-
+        if(! $produto) {
+            return response()->json([
+                'error' => 'Product not found'
+            ], 404);
+        }
         
+        $produto->update($data);
+
+        return response()->json([
+            'message' => 'success'
+        ], 200);
     }
 
     /**
@@ -79,8 +93,20 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($produtoId)
     {
-        //
+        $produto = Produto::find($produtoId);
+
+        if(! $produto) {
+            return response()->json([
+                'error' => 'Product not found'
+            ], 404);
+        }
+
+        $produto->delete();
+
+        return response()->json([
+            'message' => 'success'
+        ], 200);
     }
 }
