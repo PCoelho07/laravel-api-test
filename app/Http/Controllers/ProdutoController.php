@@ -15,8 +15,7 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        $produtos = ProdutoResource::collection(Produto::paginate(25));
-
+        $produtos = ProdutoResource::collection(Produto::paginate(15));
         return $produtos;
     }
 
@@ -28,7 +27,19 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        try {
+            $produto = Produto::create($data);
+        }catch (\Exception $e) {
+            return reponse()->json([
+                'error' => $e->getMessage()
+                ], 500);
+        }
+
+        return reponse()->json([
+            'message' => 'success'
+        ], 200);
     }
 
     /**
@@ -39,14 +50,7 @@ class ProdutoController extends Controller
      */
     public function show(Produto $product)
     {
-        try {
-            $produto = new ProdutoResource($product);
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => 'Product not found'
-            ],404);
-        }
-
+        $produto = new ProdutoResource($product);
         return $produto;
     }
 
@@ -57,9 +61,16 @@ class ProdutoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Produto $prod, Request $request)
     {
-        //
+        $data = $request->all();
+
+        $produto = Produto::find($prod);
+
+        dd($produto);
+                
+
+        
     }
 
     /**
