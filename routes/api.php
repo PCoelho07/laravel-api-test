@@ -17,7 +17,8 @@ Route::prefix('products')->group(function () {
 
     Route::get('/', 'ProdutoController@index');
     Route::get('/{product}','ProdutoController@show');
-
-
+    Route::post('/', 'ProdutoController@store');
+    Route::put('/{product}', 'ProdutoController@update');
+    Route::delete('/{product}', 'ProdutoController@destroy');
 
 });
